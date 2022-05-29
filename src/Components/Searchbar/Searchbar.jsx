@@ -1,48 +1,45 @@
-import { Component } from "react";
+import { useState } from "react";
 import { ImSearch } from "react-icons/im";
 import Notiflix from "notiflix";
 
-class Searchbar extends Component {
-  state = {
-    query: "",
-  };
-  handleChange = (e) => {
-    this.setState({ query: e.currentTarget.value.toLowerCase() });
-  };
-  handleSubmit = (e) => {
+function Searchbar({ onSubmit }) {
+  const [query, setQuery] = useState("");
+
+  function handleChange(e) {
+    setQuery(e.currentTarget.value.toLowerCase());
+    console.log(query);
+  }
+
+  function handleSubmit(e) {
     e.preventDefault();
-    if (this.state.query.trim() === "") {
+    if (query.trim() === "") {
       Notiflix.Notify.warning("Please, enter a request");
       return;
     }
-    this.props.onSubmit(this.state);
-    this.setState({ query: "" });
+    console.log(onSubmit);
+    onSubmit(query);
+    setQuery("");
     e.target.reset();
-  };
-  render() {
-    return (
-      <header className="Searchbar">
-        <form
-          className="SearchForm"
-          id="search-form"
-          onSubmit={this.handleSubmit}
-        >
-          <button type="submit" className="SearchForm-button">
-            <ImSearch />
-          </button>
-
-          <input
-            className="search-form__input"
-            type="text"
-            name="query"
-            autoComplete="off"
-            placeholder="Search images and photos"
-            onChange={this.handleChange}
-          />
-        </form>
-      </header>
-    );
   }
+
+  return (
+    <header className="Searchbar">
+      <form className="SearchForm" id="search-form" onSubmit={handleSubmit}>
+        <button type="submit" className="SearchForm-button">
+          <ImSearch />
+        </button>
+
+        <input
+          className="search-form__input"
+          type="text"
+          name="query"
+          autoComplete="off"
+          placeholder="Search images and photos"
+          onChange={handleChange}
+        />
+      </form>
+    </header>
+  );
 }
 
 export { Searchbar };
