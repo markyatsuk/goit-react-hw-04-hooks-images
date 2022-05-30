@@ -15,12 +15,13 @@ export default function ImageGallery({ searchValue }) {
   const [largeImageURL, setLargeImageURL] = useState("");
 
   useEffect(() => {
-    if (!searchResult) {
+    if (!searchValue) {
       return;
     }
     picturesApiService.resetPage();
     setStatus("pending");
     picturesApiService.query = searchValue;
+    console.log(searchValue);
     picturesApiService.fetchPictures().then((fetchResponse) => {
       if (fetchResponse.data.hits.length > 0) {
         setSearchResult(fetchResponse.data.hits);
@@ -33,17 +34,17 @@ export default function ImageGallery({ searchValue }) {
         setStatus("rejected");
       }
     });
-  }, [searchValue, searchResult, errorText]);
+  }, [searchValue, errorText]);
 
   function onLoadMore(data) {
     setSearchResult((prevState) => prevState.concat(data));
   }
   function handleModal(url) {
-    setShowModal(({ showModal }) => !showModal);
+    setShowModal(!showModal);
     setLargeImageURL(url);
   }
   function onModalClose() {
-    setShowModal(({ showModal }) => !showModal);
+    setShowModal(!showModal);
   }
 
   if (status === "pending") {

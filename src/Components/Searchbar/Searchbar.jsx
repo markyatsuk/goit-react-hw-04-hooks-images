@@ -7,7 +7,6 @@ function Searchbar({ onSubmit }) {
 
   function handleChange(e) {
     setQuery(e.currentTarget.value.toLowerCase());
-    console.log(query);
   }
 
   function handleSubmit(e) {
@@ -16,7 +15,6 @@ function Searchbar({ onSubmit }) {
       Notiflix.Notify.warning("Please, enter a request");
       return;
     }
-    console.log(onSubmit);
     onSubmit(query);
     setQuery("");
     e.target.reset();

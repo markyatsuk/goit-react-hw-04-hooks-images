@@ -1,40 +1,36 @@
-import { Component } from "react";
+import { useState } from "react";
 import PicturesApiService from "../FetchApi/FetchAPI";
 import { Loader } from "../Loader/Loader";
 const picturesApiService = new PicturesApiService();
+function Button({ searchValue, onLoadMore, totalHits }) {
+  const [status, setStatus] = useState("resolved");
 
-class Button extends Component {
-  state = {
-    status: "resolved",
-  };
-  onLoadMoreClick = () => {
-    this.setState({ status: "pending" });
-    picturesApiService.query = this.props.searchValue;
+  function onLoadMoreClick() {
+    setStatus("pending");
+    picturesApiService.query = searchValue;
     if (picturesApiService.page === 1) {
       picturesApiService.incrementPage();
     }
 
     picturesApiService.fetchPictures().then((fetchResponse) => {
-      this.props.onLoadMore(fetchResponse.data.hits);
-      if (12 * picturesApiService.page >= this.props.totalHits) {
-        this.setState({ status: "rejected" });
+      onLoadMore(fetchResponse.data.hits);
+      if (12 * picturesApiService.page >= totalHits) {
+        setStatus("rejected");
       } else {
-        this.setState({ status: "resolved" });
+        setStatus("resolved");
       }
     });
-  };
-  render() {
-    const { status } = this.state;
-    if (status === "pending") {
-      return <Loader />;
-    }
-    if (status === "resolved") {
-      return (
-        <button type="button" className="Button" onClick={this.onLoadMoreClick}>
-          Load more
-        </button>
-      );
-    }
+  }
+
+  if (status === "pending") {
+    return <Loader />;
+  }
+  if (status === "resolved") {
+    return (
+      <button type="button" className="Button" onClick={onLoadMoreClick}>
+        Load more
+      </button>
+    );
   }
 }
 
